@@ -5,7 +5,7 @@ import xyz.xasmc.mitori.satori.datatype.guildMember.GuildMember
 import xyz.xasmc.mitori.satori.datatype.user.User
 
 object PlayerUtil {
-    fun createSatoriMember(player: Player, joinedAt: Long): GuildMember {
+    fun createSatoriMember(player: Player, joinedAt: Long?): GuildMember {
         return GuildMember(nick = player.username, avatar = "玩家头像", joined_at = joinedAt)
     }
 

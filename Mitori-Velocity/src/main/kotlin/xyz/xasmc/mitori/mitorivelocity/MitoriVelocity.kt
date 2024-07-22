@@ -18,9 +18,7 @@ import xyz.xasmc.mitori.satori.api.*
 import xyz.xasmc.mitori.satori.datatype.channel.Channel
 import xyz.xasmc.mitori.satori.datatype.channel.ChannelType
 import xyz.xasmc.mitori.satori.datatype.guild.Guild
-import xyz.xasmc.mitori.satori.datatype.guildMember.GuildMember
 import xyz.xasmc.mitori.satori.datatype.message.Message
-import xyz.xasmc.mitori.satori.datatype.user.User
 import xyz.xasmc.mitori.satori.event.BaseEvent
 import xyz.xasmc.mitori.satori.event.guildMember.GuildMemberAddedEvent
 import xyz.xasmc.mitori.satori.event.guildMember.GuildMemberRemovedEvent
@@ -49,11 +47,9 @@ class MitoriVelocity {
     private val currentMessageId = 0L
 
     private val proxyGuild = Guild(
-        id = "velocity",
-        name = "Velocity",
-        avatar = satoriServer.baseLink + "/resource/server-icon.png"
+        id = "velocity", name = "Velocity", avatar = satoriServer.baseLink + "/resource/server-icon.png"
     )
-    private val playerJoinTime = mutableMapOf<UUID, Pair<String, Instant>>()
+    private val playerJoinTime = mutableMapOf<UUID, Instant>()
 
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent) {
@@ -66,11 +62,10 @@ class MitoriVelocity {
 
     @Subscribe
     fun onServerConnected(event: ServerConnectedEvent) {
-        val serverName = event.server.serverInfo.name
         val player = event.player
         val playerUuid = player.uniqueId
         val firstJoin = playerJoinTime[playerUuid] == null
-        playerJoinTime[playerUuid] = Pair(serverName, Instant.now())
+        playerJoinTime.computeIfAbsent(playerUuid) { Instant.now() }
         // 处理事件
         if (!firstJoin) return
         val now = Instant.now()
@@ -114,13 +109,8 @@ class MitoriVelocity {
         val message = event.message
         // 构建事件
         val satoriChannel = Channel(serverName, ChannelType.TEXT, serverName)
-        val satoriUser = User(player.uniqueId.toString(), player.username, player.username, "玩家头像链接", false)
-        val (joinServerName, joinedAt) = playerJoinTime[player.uniqueId] ?: Pair(serverName, null)
-        val satoriMember = GuildMember(
-            nick = player.username,
-            avatar = "玩家头像链接",
-            joined_at = if (joinServerName == serverName) joinedAt?.toEpochMilli() else null
-        )
+        val satoriUser = PlayerUtil.createSatoriUser(player)
+        val satoriMember = PlayerUtil.createSatoriMember(player, playerJoinTime[player.uniqueId]?.toEpochMilli())
         val satoriMessage = Message(
             id = currentMessageId.toString(),
             content = message,
