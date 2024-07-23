@@ -16,18 +16,19 @@ class XmlDocument(
             var ptr = 0
             while (ptr < content.length) {
                 // 处理注释
-                if (content.substring(ptr..ptr + 3) == "<!--") {
+                if (content.startsWith("<!--", ptr)) {
                     val endCommentIndex = content.indexOf("-->", ptr + 4)
                     ptr = endCommentIndex + 3
                     continue
                 }
                 // 处理闭标签
-                if (content[ptr] == '<' && content[ptr + 1] == '/') {
+                if (content.startsWith("</", ptr)) {
                     if (sb.isNotEmpty()) {
                         result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
                         sb.clear()
                     }
-                    val endIndex = content.indexOf(">", ptr)
+                    val endIndex = content.indexOf(">", ptr + 2)
+                    if (endIndex == -1) throw IllegalArgumentException("Unclosed tag: ${content.substring(ptr)}")
                     val closeTagStr = content.substring(ptr..endIndex)
                     val closeTagName = closeTagStr.removeSurrounding("</", ">").trim()
                     if (closeTagName == parentName) return Pair(result, endIndex + 1) // 正确的闭标签, 返回
@@ -39,7 +40,8 @@ class XmlDocument(
                         result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
                         sb.clear()
                     }
-                    val endIndex = content.indexOf(">", ptr)
+                    val endIndex = content.indexOf(">", ptr + 1)
+                    if (endIndex == -1) throw IllegalArgumentException("Unclosed tag: ${content.substring(ptr)}")
                     if (content[endIndex - 1] == '/') {
                         // 立即关闭
                         val openTagStr = content.substring(ptr..endIndex)
@@ -52,7 +54,7 @@ class XmlDocument(
                     val (name, attr) = parseOpenTag(openTagStr)
                     // 处理剩下的内容
                     ptr = endIndex + 1
-                    val contentStr = content.substring(ptr..<content.length)
+                    val contentStr = content.substring(ptr)
                     val (child, read) = parseStr(contentStr, name)
                     ptr += read
                     result.add(XmlElement(name, attr, child))
@@ -66,6 +68,7 @@ class XmlDocument(
                 } else sb.append(content[ptr])
                 ptr++
             }
+            if (sb.isNotEmpty()) result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
             return Pair(result, content.length)
         }
 
