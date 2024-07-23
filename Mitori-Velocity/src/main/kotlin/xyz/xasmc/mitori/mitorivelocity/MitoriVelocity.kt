@@ -66,8 +66,8 @@ class MitoriVelocity {
         val playerUuid = player.uniqueId
         val firstJoin = playerJoinTime[playerUuid] == null
         playerJoinTime.computeIfAbsent(playerUuid) { Instant.now() }
-        // 处理事件
         if (!firstJoin) return
+        // 构建事件
         val now = Instant.now()
         val satoriMember = PlayerUtil.createSatoriMember(player, now.toEpochMilli())
         val satoriUser = PlayerUtil.createSatoriUser(player)
@@ -86,7 +86,7 @@ class MitoriVelocity {
         val playerUuid = player.uniqueId
         if (!playerJoinTime.containsKey(playerUuid)) return
         playerJoinTime.remove(playerUuid)
-        // 处理事件
+        // 构建事件
         val now = Instant.now()
         val satoriMember = PlayerUtil.createSatoriMember(player, now.toEpochMilli())
         val satoriUser = PlayerUtil.createSatoriUser(player)
