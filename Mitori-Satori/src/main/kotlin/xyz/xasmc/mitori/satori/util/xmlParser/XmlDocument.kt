@@ -24,7 +24,7 @@ class XmlDocument(
                 // 处理闭标签
                 if (content.startsWith("</", ptr)) {
                     if (sb.isNotEmpty()) {
-                        result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
+                        result.addAll(parsePlainText(sb.toString()))
                         sb.clear()
                     }
                     val endIndex = content.indexOf(">", ptr + 2)
@@ -37,7 +37,7 @@ class XmlDocument(
                 // 处理开标签
                 if (content[ptr] == '<') {
                     if (sb.isNotEmpty()) {
-                        result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
+                        result.addAll(parsePlainText(sb.toString()))
                         sb.clear()
                     }
                     val endIndex = content.indexOf(">", ptr + 1)
@@ -61,15 +61,23 @@ class XmlDocument(
                     continue
                 }
                 // 啥也不是,原始文本
-                if (sb.isNotEmpty() || (content[ptr] != '\n' && content[ptr] != ' ')) if (content[ptr] == '\n') {
-                    result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
-                    sb.clear()
-                    result.add(XmlElement("br", emptyMap(), emptyList()))
-                } else sb.append(content[ptr])
+                if (sb.isNotEmpty() || (content[ptr] != '\n' && content[ptr] != ' ')) sb.append(content[ptr])
                 ptr++
             }
-            if (sb.isNotEmpty()) result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
+            if (sb.isNotEmpty()) result.addAll(parsePlainText(sb.toString()))
             return Pair(result, content.length)
+        }
+
+        private fun parsePlainText(str: String): MutableList<XmlElement> {
+            val result = mutableListOf<XmlElement>()
+            val ls = str.trimEnd().split('\n').toMutableList()
+            val first = ls.removeFirst()
+            result.add(PlainTextElement(EscapeUtil.escape(first)))
+            ls.forEach {
+                result.add(XmlElement("br", emptyMap(), emptyList()))
+                result.add(PlainTextElement(it))
+            }
+            return result
         }
 
         private fun parseOpenTag(str: String): Pair<String, MutableMap<String, String>> {

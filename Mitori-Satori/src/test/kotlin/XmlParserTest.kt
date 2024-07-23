@@ -21,7 +21,7 @@ class XmlParserTest {
         )
         println(result)
         assertEquals(
-            "<a href=\"awa\" aaa>aLink</a>1145144<br/>1919810&quot;0<br/>awawawaw<br/><p>awa<br/><a href=\"/login\">login</a>qwqwqwq<br/></p>",
+            "<a href=\"awa\" aaa>aLink</a>1145144<br/>1919810&quot;0<br/>awawawaw<p>awa<a href=\"/login\">login</a>qwqwqwq</p>",
             result.toString(),
         )
     }
