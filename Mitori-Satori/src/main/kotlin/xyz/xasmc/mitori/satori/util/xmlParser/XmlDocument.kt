@@ -15,6 +15,12 @@ class XmlDocument(
             val sb = StringBuilder()
             var ptr = 0
             while (ptr < content.length) {
+                // 处理注释
+                if (content.substring(ptr..ptr + 3) == "<!--") {
+                    val endCommentIndex = content.indexOf("-->", ptr + 4)
+                    ptr = endCommentIndex + 3
+                    continue
+                }
                 // 处理闭标签
                 if (content[ptr] == '<' && content[ptr + 1] == '/') {
                     if (sb.isNotEmpty()) {

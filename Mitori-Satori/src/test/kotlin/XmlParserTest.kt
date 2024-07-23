@@ -11,6 +11,7 @@ class XmlParserTest {
         1145144<br/>
         1919810&quot;&#x30;
         awawawaw
+        <!-- awa -->
         <p>
             awa
             <a href="/login">login</a>
