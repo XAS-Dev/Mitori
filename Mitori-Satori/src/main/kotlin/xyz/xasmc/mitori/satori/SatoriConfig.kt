@@ -7,6 +7,7 @@ data class SatoriConfig(
     val port: Int = 8080,
     val path: String? = null,
     val token: String? = null,
+    val link: String = "http://$host:$port",
     val platform: String = "mitori",
     val selfId: String = UUID.randomUUID().toString(),
     val selfName: String = "Mitori",

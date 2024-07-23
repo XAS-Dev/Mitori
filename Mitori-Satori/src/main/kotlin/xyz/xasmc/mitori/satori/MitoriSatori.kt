@@ -40,7 +40,7 @@ class MitoriSatori(
     private val handlerConfig: HandlerConfig,
     private val resourceHandler: ResourceHandler
 ) {
-    val baseLink = "http://${config.host}:${config.port}"
+    val baseLink = config.link
     val baseUrl = Url("/") / config.path / "v1"
     private var currentId: Long = 0
     private val authedConnections = HashSet<WebSocketServerSession>()
@@ -97,9 +97,10 @@ class MitoriSatori(
                 userApiRouter(handlerConfig.user)
             }
             route("/resource") {
-                get("{id}") {
-                    val resourceId = call.request.queryParameters["id"] ?: return@get
-                    val (data, filename) = resourceHandler.getResource(resourceId)
+                get("{...}") {
+                    val resourceId = call.request.uri.substringAfter("/resource/")
+                    println(resourceId)
+                    val (data, filename) = resourceHandler.getResource(resourceId) ?: return@get
                     val types = ContentType.fromFileExtension(filename.split('.').last())
                     call.respondBytes(data, if (types.isNotEmpty()) types[0] else ContentType.Image.Any)
                 }

@@ -6,7 +6,9 @@ import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.player.PlayerChatEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
+import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
+import com.velocitypowered.api.proxy.ProxyServer
 import org.slf4j.Logger
 import xyz.xasmc.mitori.mitorivelocity.impl.ResourceHandlerImpl
 import xyz.xasmc.mitori.mitorivelocity.util.AsciiArt
@@ -27,10 +29,16 @@ import xyz.xasmc.mitorivelocity.BuildConstants
 import java.time.Instant
 import java.util.*
 
-@Plugin(id = "mitori-velocity", name = "Mitori-Velocity", version = BuildConstants.VERSION)
-class MitoriVelocity {
-    @Inject
-    private lateinit var logger: Logger
+@Plugin(
+    id = "mitori-velocity",
+    name = "Mitori-Velocity",
+    version = BuildConstants.VERSION,
+    dependencies = [Dependency(id = "skinsrestorer", optional = true)]
+)
+class MitoriVelocity @Inject constructor(
+    private var logger: Logger,
+    private var proxyServer: ProxyServer
+) {
     private val satoriConfig = SatoriConfig()
     private val handlerConfig = HandlerConfig(
         channel = object : ChannelApiHandler {},
@@ -42,7 +50,7 @@ class MitoriVelocity {
         reaction = object : ReactionApiHandler {},
         user = object : UserApiHandler {},
     )
-    private val resourceHandler = ResourceHandlerImpl()
+    private val resourceHandler = ResourceHandlerImpl(proxyServer)
     private val satoriServer = MitoriSatori(satoriConfig, handlerConfig, resourceHandler)
     private val currentMessageId = 0L
 
@@ -69,8 +77,8 @@ class MitoriVelocity {
         if (!firstJoin) return
         // 构建事件
         val now = Instant.now()
-        val satoriMember = PlayerUtil.createSatoriMember(player, now.toEpochMilli())
-        val satoriUser = PlayerUtil.createSatoriUser(player)
+        val satoriMember = PlayerUtil.createSatoriMember(player, now.toEpochMilli(), satoriConfig.link)
+        val satoriUser = PlayerUtil.createSatoriUser(player, satoriConfig.link)
         val satoriEvent = GuildMemberAddedEvent(
             guild = proxyGuild,
             member = satoriMember,
@@ -88,8 +96,8 @@ class MitoriVelocity {
         playerJoinTime.remove(playerUuid)
         // 构建事件
         val now = Instant.now()
-        val satoriMember = PlayerUtil.createSatoriMember(player, now.toEpochMilli())
-        val satoriUser = PlayerUtil.createSatoriUser(player)
+        val satoriMember = PlayerUtil.createSatoriMember(player, now.toEpochMilli(), satoriConfig.link)
+        val satoriUser = PlayerUtil.createSatoriUser(player, satoriConfig.link)
         val satoriEvent = GuildMemberRemovedEvent(
             guild = proxyGuild,
             member = satoriMember,
@@ -108,9 +116,10 @@ class MitoriVelocity {
         val serverName = info.name
         val message = event.message
         // 构建事件
+        val joinTime = playerJoinTime[player.uniqueId]
         val satoriChannel = Channel(serverName, ChannelType.TEXT, serverName)
-        val satoriUser = PlayerUtil.createSatoriUser(player)
-        val satoriMember = PlayerUtil.createSatoriMember(player, playerJoinTime[player.uniqueId]?.toEpochMilli())
+        val satoriUser = PlayerUtil.createSatoriUser(player, satoriConfig.link)
+        val satoriMember = PlayerUtil.createSatoriMember(player, joinTime?.toEpochMilli(), satoriConfig.link)
         val satoriMessage = Message(
             id = currentMessageId.toString(),
             content = message,
