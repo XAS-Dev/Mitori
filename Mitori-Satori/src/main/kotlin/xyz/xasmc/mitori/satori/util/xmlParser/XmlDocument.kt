@@ -81,13 +81,13 @@ class XmlDocument(
         }
 
         private fun parseOpenTag(str: String): Pair<String, MutableMap<String, String>> {
-            val regex = Regex("""^< *([a-zA-Z0-9]+)(?: ((?: *[a-zA-Z0-9]+(?: *= *"[^"]*")? *)*))? */?>${'$'}""")
+            val regex = Regex("""^< *([a-zA-Z0-9:]+)(?: ((?: *[a-zA-Z0-9:]+(?: *= *"[^"]*")? *)*))? */?>${'$'}""")
             val result = regex.find(str) ?: throw IllegalArgumentException("Can not parse tag: $str")
             val name = result.groupValues[1]
 
             val attr = mutableMapOf<String, String>()
             val attrStr = result.groupValues[2]
-            val attrRegex = Regex("""([a-zA-Z0-9]+)(?: *= *"([^"]+)")?""")
+            val attrRegex = Regex("""([a-zA-Z0-9:]+)(?: *= *"([^"]+)")?""")
             attrRegex.findAll(attrStr).forEach {
                 val key = it.groupValues[1]
                 val value = it.groupValues[2]
