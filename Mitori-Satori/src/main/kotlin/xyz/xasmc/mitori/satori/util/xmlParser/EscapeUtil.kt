@@ -6,7 +6,7 @@ object EscapeUtil {
             .replace("&quot;", "\"")
             .replace("&lt;", "<")
             .replace("&gt;", ">")
-            .replace("&amp", "&")
+            .replace("&amp;", "&")
         val regex = Regex("""&#(x?[0-9]+);""")
         return regex.replace(processedString) {
             val numStr = it.groupValues[1]
@@ -16,7 +16,7 @@ object EscapeUtil {
     }
 
     fun unescape(string: String) = string
-        .replace("&", "&amp")
+        .replace("&", "&amp;")
         .replace("\"", "&quot;")
         .replace("<", "&lt;")
         .replace(">", "&gt;")
