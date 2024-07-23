@@ -18,7 +18,7 @@ class XmlDocument(
                 // 处理闭标签
                 if (content[ptr] == '<' && content[ptr + 1] == '/') {
                     if (sb.isNotEmpty()) {
-                        result.add(PlainTextElement(sb.toString().trimEnd()))
+                        result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
                         sb.clear()
                     }
                     val endIndex = content.indexOf(">", ptr)
@@ -30,7 +30,7 @@ class XmlDocument(
                 // 处理开标签
                 if (content[ptr] == '<') {
                     if (sb.isNotEmpty()) {
-                        result.add(PlainTextElement(sb.toString().trimEnd()))
+                        result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
                         sb.clear()
                     }
                     val endIndex = content.indexOf(">", ptr)
@@ -54,7 +54,7 @@ class XmlDocument(
                 }
                 // 啥也不是,原始文本
                 if (sb.isNotEmpty() || (content[ptr] != '\n' && content[ptr] != ' ')) if (content[ptr] == '\n') {
-                    result.add(PlainTextElement(sb.toString().trimEnd()))
+                    result.add(PlainTextElement(EscapeUtil.escape(sb.toString().trimEnd())))
                     sb.clear()
                     result.add(XmlElement("br", emptyMap(), emptyList()))
                 } else sb.append(content[ptr])

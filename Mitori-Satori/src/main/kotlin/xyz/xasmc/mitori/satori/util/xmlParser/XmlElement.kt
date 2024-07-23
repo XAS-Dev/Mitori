@@ -10,7 +10,7 @@ open class XmlElement(
         sb.append("<").append(name)
         attributes.forEach {
             sb.append(" ").append(it.key)
-            if (it.value.isNotEmpty()) sb.append("=\"").append(it.value).append("\"")
+            if (it.value.isNotEmpty()) sb.append("=\"").append(EscapeUtil.unescape(it.value)).append("\"")
         }
         if (children.isNotEmpty()) {
             sb.append(">")

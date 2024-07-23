@@ -9,7 +9,7 @@ class XmlParserTest {
             """
         <a href="awa" aaa>aLink</a>
         1145144<br/>
-        1919810
+        1919810&quot;&#x30;
         awawawaw
         <p>
             awa
@@ -18,9 +18,10 @@ class XmlParserTest {
         </p>
         """.trimIndent()
         )
+        println(result)
         assertEquals(
+            "<a href=\"awa\" aaa>aLink</a>1145144<br/>1919810&quot;0<br/>awawawaw<br/><p>awa<br/><a href=\"/login\">login</a>qwqwqwq<br/></p>",
             result.toString(),
-            "<a href=\"awa\" aaa>aLink</a>1145144<br/>1919810<br/>awawawaw<br/><p>awa<br/><a href=\"/login\">login</a>qwqwqwq<br/></p>"
         )
     }
 }
