@@ -25,7 +25,6 @@ import xyz.xasmc.mitori.satori.event.BaseEvent
 import xyz.xasmc.mitori.satori.event.guildMember.GuildMemberAddedEvent
 import xyz.xasmc.mitori.satori.event.guildMember.GuildMemberRemovedEvent
 import xyz.xasmc.mitori.satori.event.message.MessageCreateEvent
-import xyz.xasmc.mitorivelocity.BuildConstants
 import java.time.Instant
 import java.util.*
 

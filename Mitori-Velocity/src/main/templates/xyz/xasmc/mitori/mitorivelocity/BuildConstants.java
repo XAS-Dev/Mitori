@@ -1,4 +1,4 @@
-package xyz.xasmc.mitorivelocity;
+package xyz.xasmc.mitori.mitorivelocity;
 
 // The constants are replaced before compilation
 public class BuildConstants {
