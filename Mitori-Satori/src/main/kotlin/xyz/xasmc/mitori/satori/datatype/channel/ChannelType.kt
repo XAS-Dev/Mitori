@@ -1,6 +1,6 @@
 package xyz.xasmc.mitori.satori.datatype.channel
 
-import IntEnumSerializer
+import xyz.xasmc.mitori.satori.util.IntEnumSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable(with = ChannelType.Serializer::class)

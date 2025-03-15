@@ -13,16 +13,14 @@ import xyz.xasmc.mitori.satori.datatype.user.User
 
 @Serializable
 data class Event(
-    val id: Long,                    // 事件ID
+    val sn: Long,                    // 事件ID
     val type: String,                // 事件类型
-    val platform: String,            // 接受者的平台名称
-    val self_id: String,             // 接受者的平台账号
     val timestamp: Long,             // 事件的时间戳
+    val login: Login? = null,        // 事件的登录信息
     val argv: Argv? = null,          // 交互指令
     val button: Button? = null,      // 交互按钮
     val channel: Channel? = null,    // 事件所属的频道
     val guild: Guild? = null,        // 事件所属的群组
-    val login: Login? = null,        // 事件的登录信息
     val member: GuildMember? = null, // 事件的目标成员
     val message: Message? = null,    // 事件的消息
     val operator: User? = null,      // 事件的操作者

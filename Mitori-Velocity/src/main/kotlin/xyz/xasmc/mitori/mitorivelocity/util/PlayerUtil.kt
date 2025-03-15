@@ -1,6 +1,7 @@
 package xyz.xasmc.mitori.mitorivelocity.util
 
 import com.velocitypowered.api.proxy.Player
+import xyz.xasmc.mitori.mitorivelocity.MitoriVelocity
 import xyz.xasmc.mitori.satori.datatype.guildMember.GuildMember
 import xyz.xasmc.mitori.satori.datatype.user.User
 import java.awt.image.BufferedImage
@@ -8,13 +9,15 @@ import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
 object PlayerUtil {
-    fun createSatoriMember(player: Player, joinedAt: Long? = null, baseLink: String? = null): GuildMember {
-        val avatar = if (baseLink != null) "$baseLink/resource/player/avatar/${player.uniqueId}" else null
+    val satoriServer = MitoriVelocity.instant.satoriServer
+
+    fun createSatoriMember(player: Player, joinedAt: Long? = null): GuildMember {
+        val avatar = satoriServer.makeResourceLink("player/avatar/${player.uniqueId}")
         return GuildMember(nick = player.username, avatar = avatar, joined_at = joinedAt)
     }
 
-    fun createSatoriUser(player: Player, baseLink: String? = null): User {
-        val avatar = if (baseLink != null) "$baseLink/resource/player/avatar/${player.uniqueId}" else null
+    fun createSatoriUser(player: Player): User {
+        val avatar = satoriServer.makeResourceLink("player/avatar/${player.uniqueId}")
         return User(
             id = player.uniqueId.toString(), name = player.username, nick = player.username, avatar = avatar, false
         )

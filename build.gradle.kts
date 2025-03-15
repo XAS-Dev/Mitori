@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
-    kotlin("kapt") version "1.9.24"
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.0.1"
+    kotlin("jvm") version "2.1.10"
+    kotlin("kapt") version "2.1.10"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.10"
 }
 
 group = "org.example"
@@ -23,5 +23,5 @@ tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }

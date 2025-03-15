@@ -1,5 +1,8 @@
 package xyz.xasmc.mitori.satori.util.xmlParser
 
+
+// TODO: https://satori.chat/zh-CN/protocol/elements.html#message
+// 重写罢(悲
 class XmlDocument(
     val elements: List<XmlElement>,
 ) {

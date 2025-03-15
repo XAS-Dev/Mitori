@@ -1,6 +1,6 @@
 package xyz.xasmc.mitori.satori.datatype.login
 
-import IntEnumSerializer
+import xyz.xasmc.mitori.satori.util.IntEnumSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable(with = Status.Serializer::class)

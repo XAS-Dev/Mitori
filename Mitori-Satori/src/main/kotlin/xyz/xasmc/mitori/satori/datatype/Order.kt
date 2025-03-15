@@ -1,6 +1,6 @@
 package xyz.xasmc.mitori.satori.datatype
 
-import StringEnumSerializer
+import xyz.xasmc.mitori.satori.util.StringEnumSerializer
 import kotlinx.serialization.Serializable
 
 

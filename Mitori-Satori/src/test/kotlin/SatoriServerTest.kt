@@ -7,7 +7,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.junit.jupiter.api.Test
 import xyz.xasmc.mitori.satori.HandlerConfig
-import xyz.xasmc.mitori.satori.MitoriSatori
+import xyz.xasmc.mitori.satori.SatoriServer
 import xyz.xasmc.mitori.satori.ResourceHandler
 import xyz.xasmc.mitori.satori.SatoriConfig
 import xyz.xasmc.mitori.satori.api.*
@@ -40,7 +40,7 @@ class SatoriServerTest() {
         }
     }
 
-    private val satoriServer = MitoriSatori(satoriConfig, handlerConfig, resourceHandler)
+    private val satoriServer = SatoriServer(satoriConfig, handlerConfig, resourceHandler)
     val client = HttpClient()
 
     @Test
@@ -56,7 +56,7 @@ class SatoriServerTest() {
         satoriServer.start()
 
         val result = runBlocking {
-            client.post(satoriServer.baseLink + satoriServer.baseUrl + "/channel.get") {
+            client.post(satoriServer.baseLink + satoriServer.baseUri + "/channel.get") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer 114514")
                 setBody(Json.encodeToString(serializer(), ChannelGet("114514")))
