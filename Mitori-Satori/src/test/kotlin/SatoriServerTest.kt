@@ -35,20 +35,20 @@ class SatoriServerTest() {
         user = object : UserApiHandler {},
     )
     private val resourceHandler = object : ResourceHandler {
-        override fun getResource(id: String): Pair<ByteArray, String> {
-            return Pair(ByteArray(0), "")
+        override fun getResource(id: String): ResourceHandler.Resource {
+            return ResourceHandler.Resource(ByteArray(0), "")
         }
     }
 
     private val satoriServer = SatoriServer(satoriConfig, handlerConfig, resourceHandler)
-    val client = HttpClient()
+    private val client = HttpClient()
 
     @Test
     fun testRoot() {
         satoriServer.start()
-        val result = runBlocking { client.get(satoriServer.baseLink) }
+        val result = runBlocking { client.get(satoriConfig.link) }
         assertEquals(result.status, HttpStatusCode.OK)
-        satoriServer.stop()
+        satoriServer.stopBlocking()
     }
 
     @Test
@@ -56,7 +56,7 @@ class SatoriServerTest() {
         satoriServer.start()
 
         val result = runBlocking {
-            client.post(satoriServer.baseLink + satoriServer.baseUri + "/channel.get") {
+            client.post(satoriConfig.link + satoriConfig.path + "/channel.get") {
                 contentType(ContentType.Application.Json)
                 header(HttpHeaders.Authorization, "Bearer 114514")
                 setBody(Json.encodeToString(serializer(), ChannelGet("114514")))
@@ -65,6 +65,6 @@ class SatoriServerTest() {
         val body = runBlocking { result.bodyAsText() }
         assertEquals(result.status, HttpStatusCode.OK)
         assertEquals(Json.decodeFromString<Channel>(body), Channel("114514", ChannelType.TEXT, "114514"))
-        satoriServer.stop()
+        satoriServer.stopBlocking()
     }
 }
